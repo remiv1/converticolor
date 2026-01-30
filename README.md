@@ -10,7 +10,6 @@
 
 - **Conversion multi-formats** : Hexadécimal, RGB, CMJN (CMYK), HSL, HSV
 - **Aperçu couleur** : Visualisation instantanée avec coins arrondis
-- **Pipette** : Capture de couleur n'importe où sur l'écran
 - **Harmonies de couleurs** : Complémentaire, analogues, triadiques
 - **Vérificateur de contraste WCAG** : Conformité accessibilité web
 - **Copie presse-papier** : Bouton de copie pour chaque format
@@ -26,12 +25,11 @@
 │     ┌─────────────────────┐             │
 │     │   Aperçu couleur    │             │
 │     └─────────────────────┘             │
-│     [ Pipette ]                         │
 │                                         │
 │  ○ Hex  ○ RGB  ○ CMJN  ○ HSL  ○ HSV     │
 │  [____________________________] [Conv]  │
 │                                         │
-│  Hex:  #FF5733                   [📋] │
+│  Hex:  #FF5733                     [📋] │
 │  RGB:  255, 87, 51                 [📋] │
 │  CMJN: 0%, 65.9%, 80%, 0%          [📋] │
 │  HSL:  11°, 100%, 60%              [📋] │
@@ -77,7 +75,6 @@ python src/main.py
 
 - Python 3.8 ou supérieur
 - Tkinter (inclus avec Python)
-- Pillow (pour la pipette)
 
 ### Structure du projet
 
@@ -124,13 +121,6 @@ python build.py --linux --appimage
 | **CMJN** | `0, 65.9, 80, 0` | Cyan, Magenta, Jaune, Noir (0-100%) |
 | **HSL** | `11, 100, 60` | Teinte (0-360°), Saturation, Luminosité (0-100%) |
 | **HSV** | `11, 80, 100` | Teinte (0-360°), Saturation, Valeur (0-100%) |
-
-### Pipette
-
-1. Cliquez sur le bouton "🔍 Pipette"
-2. Déplacez la souris sur l'écran - une loupe suit votre curseur
-3. Cliquez pour capturer la couleur
-4. Appuyez sur `Échap` pour annuler
 
 ### Vérificateur de contraste WCAG
 
