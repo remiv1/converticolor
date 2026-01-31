@@ -18,7 +18,7 @@ def clean_build():
         if os.path.exists(dir_name):
             shutil.rmtree(dir_name)
             print(f"✓ Supprimé: {dir_name}")
-    
+
     # Nettoyer les fichiers .spec
     for spec_file in Path('.').glob('*.spec'):
         spec_file.unlink()
@@ -30,7 +30,7 @@ def build_windows():
     print("\n" + "="*50)
     print("Construction de l'exécutable Windows...")
     print("="*50 + "\n")
-    
+
     cmd = [
         sys.executable, '-m', 'PyInstaller',
         '--onefile',                    # Un seul fichier exe
@@ -41,12 +41,12 @@ def build_windows():
         '--hidden-import=color_converter',  # Inclure le module
         'src/main.py'                   # Script principal
     ]
-    
+
     # Vérifier si l'icône existe
     if not os.path.exists('assets/icon.ico'):
         cmd = [c for c in cmd if 'icon=' not in c]
         print("⚠ Icône non trouvée, build sans icône...")
-    
+
     try:
         subprocess.run(cmd, check=True)
         print("\n✅ Build Windows terminé!")
@@ -62,7 +62,7 @@ def build_linux():
     print("\n" + "="*50)
     print("Construction de l'exécutable Linux...")
     print("="*50 + "\n")
-    
+
     cmd = [
         sys.executable, '-m', 'PyInstaller',
         '--onefile',                    # Un seul fichier
@@ -70,7 +70,7 @@ def build_linux():
         '--name=converticolor',         # Nom de l'exécutable (minuscule pour Linux)
         'src/main.py'                   # Script principal
     ]
-    
+
     try:
         subprocess.run(cmd, check=True)
         print("\n✅ Build Linux terminé!")
@@ -86,19 +86,19 @@ def create_appimage():
     print("\n" + "="*50)
     print("Création de l'AppImage Linux...")
     print("="*50 + "\n")
-    
+
     appdir = Path('ConvertiColor.AppDir')
-    
+
     # Créer la structure AppDir
     (appdir / 'usr' / 'bin').mkdir(parents=True, exist_ok=True)
     (appdir / 'usr' / 'share' / 'applications').mkdir(parents=True, exist_ok=True)
     (appdir / 'usr' / 'share' / 'icons').mkdir(parents=True, exist_ok=True)
-    
+
     # Copier l'exécutable
     if os.path.exists('dist/converticolor'):
         shutil.copy('dist/converticolor', appdir / 'usr' / 'bin' / 'converticolor')
         os.chmod(appdir / 'usr' / 'bin' / 'converticolor', 0o755)
-    
+
     # Créer le fichier .desktop
     desktop_content = """[Desktop Entry]
 Type=Application
@@ -109,9 +109,10 @@ Icon=converticolor
 Categories=Graphics;Utility;
 Terminal=false
 """
-    (appdir / 'usr' / 'share' / 'applications' / 'converticolor.desktop').write_text(desktop_content)
+    (appdir / 'usr' / 'share' / 'applications' / 'converticolor.desktop') \
+        .write_text(desktop_content)
     (appdir / 'converticolor.desktop').write_text(desktop_content)
-    
+
     # Créer AppRun
     apprun_content = """#!/bin/bash
 SELF=$(readlink -f "$0")
@@ -122,11 +123,11 @@ exec "${HERE}/usr/bin/converticolor" "$@"
     apprun_path = appdir / 'AppRun'
     apprun_path.write_text(apprun_content)
     os.chmod(apprun_path, 0o755)
-    
+
     print("✅ Structure AppDir créée!")
     print("   Pour créer l'AppImage final, exécutez:")
     print("   appimagetool ConvertiColor.AppDir ConvertiColor-x86_64.AppImage")
-    
+
     return True
 
 
@@ -135,15 +136,14 @@ def install_dependencies():
     print("\n" + "="*50)
     print("Installation des dépendances...")
     print("="*50 + "\n")
-    
-    dependencies = ['pyinstaller', 'pillow']
-    
+
+    dependencies = ['pyinstaller']
+
     for dep in dependencies:
         print(f"Installation de {dep}...")
         subprocess.run([sys.executable, '-m', 'pip', 'install', dep], check=True)
-    
-    print("\n✅ Dépendances installées!")
 
+    print("\n✅ Dépendances installées!")
 
 def _parse_args() -> argparse.Namespace:
     """Parse les arguments de ligne de commande."""
@@ -151,12 +151,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument('--clean', action='store_true', help='Nettoyer les builds précédents')
     parser.add_argument('--windows', action='store_true', help='Build Windows uniquement')
     parser.add_argument('--linux', action='store_true', help='Build Linux uniquement')
-    parser.add_argument('--appimage', action='store_true', help='Créer AppImage (après build Linux)')
+    parser.add_argument('--appimage', action='store_true', help='Créer AppImage suite build Linux')
     parser.add_argument('--install-deps', action='store_true', help='Installer les dépendances')
     parser.add_argument('--all', action='store_true', help='Build toutes les plateformes')
-    
-    return parser.parse_args()
 
+    return parser.parse_args()
 
 def _build_for_current_platform(include_appimage: bool) -> None:
     """Construit pour la plateforme courante."""
@@ -186,25 +185,25 @@ def _has_build_target(args: argparse.Namespace) -> bool:
 def main():
     """Point d'entrée principal du script de build."""
     args = _parse_args()
-    
+
     # Se placer dans le dossier du projet
     script_dir = Path(__file__).parent
     os.chdir(script_dir)
-    
+
     if args.install_deps:
         install_dependencies()
         return
-    
+
     if args.clean:
         clean_build()
         if not _has_build_target(args) and not args.all:
             return
-    
+
     if args.all or not _has_build_target(args):
         _build_for_current_platform(args.appimage)
     else:
         _run_selected_builds(args)
-    
+
     print("\n" + "="*50)
     print("Build terminé!")
     print("="*50)

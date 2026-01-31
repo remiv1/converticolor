@@ -27,7 +27,7 @@ class RoundedFrame(tk.Canvas):
         self.radius = radius
         self.bind(self.CONFIGURE_EVENT, self._draw_rounded)
 
-    def _draw_rounded(self, event: Optional[tk.Event] = None) -> None:
+    def _draw_rounded(self, event: Optional[tk.Event] = None) -> None: # pylint: disable=unused-argument
         """Dessine le rectangle arrondi."""
         self.delete("rounded")
         w = self.winfo_width()
