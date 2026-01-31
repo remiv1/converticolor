@@ -3,8 +3,5 @@
 # Interface graphique (inclus avec Python)
 # tkinter - inclus dans Python standard
 
-# Capture d'écran pour la pipette
-Pillow>=9.0.0
-
 # Packaging (pour la création des exécutables)
 pyinstaller>=5.0.0

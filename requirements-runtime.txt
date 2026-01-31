@@ -1,2 +1,0 @@
-# Dépendances minimales pour exécuter l'application
-Pillow>=9.0.0
